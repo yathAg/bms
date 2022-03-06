@@ -187,6 +187,9 @@
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="serial_processor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="system.h">
       <SubType>compile</SubType>
     </Compile>

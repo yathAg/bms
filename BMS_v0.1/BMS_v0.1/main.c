@@ -16,7 +16,7 @@
 #include "adc_414.h"
 #include "uart_414.h"
 #include "system.h"
-
+#include "serial_processor.h"
 
 FUSES = {
 	.WDTCFG     = FUSE_WDTCFG_DEFAULT,
@@ -29,67 +29,44 @@ FUSES = {
 	.BOOTEND    = FUSE_BOOTEND_DEFAULT,
 };
 
-
-
-
-
+//Global variables
 uint16_t adcVal;
-char adcStr[6] ;
-int maxModules = 2;
-int moduleNum = 1; // indexed at 1
+uint8_t SerialBuffer[4+ sizeof(dataBuffer)];
 
 
 
 
-
-
-
-typedef struct dataBuffer 
-{
-	uint8_t address;
-	uint8_t operation;
-	uint16_t value[2];
-} dataBuffer;// __attribute__((packed));
-
-uint8_t SerialBuffer[8+ sizeof(dataBuffer)];
 
 void makeStruct(dataBuffer *receivebuffer)
 {
+	uint8_t moduleIndex = moduleNum-1;
 	receivebuffer->address =moduleNum;
-	receivebuffer->operation =0;
 	
-	for (int i = 1; i<=maxModules ; i++)
-	{
-		if(i==moduleNum)
-			receivebuffer->value[i-1] = 696;
-	}
+	receivebuffer->value[moduleIndex] = adcVal;
+	
 	
 }
 
-
 int main(void)
 {
-	
 	low_power_init();
   	USART0_init();
   	ADC0_init_sample();
+	
+	begin(sizeof(dataBuffer),SerialBuffer);
+	
 	
 	while (1)
   	{
 		
 	  	adcVal = ADC0_read_sample();
-	  	
 	  	adcVal = adcVal >> 4;
 		  
-
-		//sprintf("%i\r\n" , adcVal);  //takes up huge chunk of code space.
 		makeStruct((dataBuffer*)SerialBuffer);
 		
-	  	USART0_sendString(SerialBuffer);
+	  	sendBuffer(SerialBuffer);
 	  	
-		_delay_ms(1000);
-		
-		
+		_delay_ms(1000);	
   	}
 }
 

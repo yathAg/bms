@@ -3,33 +3,33 @@ BMS_v0.1.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000006  00803f00  000001cc  00000280  2**0
+  0 .data         00000004  00803f00  000001cc  00000280  2**0
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         000001cc  00000000  00000000  000000b4  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000016  00803f06  00803f06  00000286  2**0
+  2 .bss          0000000f  00803f04  00803f04  00000284  2**0
                   ALLOC
-  3 .fuse         00000009  00820000  00820000  00000286  2**0
+  3 .fuse         00000009  00820000  00820000  00000284  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  4 .comment      00000030  00000000  00000000  0000028f  2**0
+  4 .comment      00000030  00000000  00000000  0000028d  2**0
                   CONTENTS, READONLY
   5 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000002c0  2**2
                   CONTENTS, READONLY
-  6 .debug_aranges 00000058  00000000  00000000  000002fc  2**0
+  6 .debug_aranges 00000070  00000000  00000000  000002fc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   0000209c  00000000  00000000  00000354  2**0
+  7 .debug_info   0000213f  00000000  00000000  0000036c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 00001704  00000000  00000000  000023f0  2**0
+  8 .debug_abbrev 00001722  00000000  00000000  000024ab  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   00000515  00000000  00000000  00003af4  2**0
+  9 .debug_line   00000592  00000000  00000000  00003bcd  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  000000a8  00000000  00000000  0000400c  2**2
+ 10 .debug_frame  000000ec  00000000  00000000  00004160  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    0000126a  00000000  00000000  000040b4  2**0
+ 11 .debug_str    000012a3  00000000  00000000  0000424c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    000000c7  00000000  00000000  0000531e  2**0
+ 12 .debug_loc    0000016e  00000000  00000000  000054ef  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 00000048  00000000  00000000  000053e5  2**0
+ 13 .debug_ranges 00000060  00000000  00000000  0000565d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -79,13 +79,13 @@ Disassembly of section .text:
   4a:	02 c0       	rjmp	.+4      	; 0x50 <__do_copy_data+0x10>
   4c:	05 90       	lpm	r0, Z+
   4e:	0d 92       	st	X+, r0
-  50:	a6 30       	cpi	r26, 0x06	; 6
+  50:	a4 30       	cpi	r26, 0x04	; 4
   52:	b1 07       	cpc	r27, r17
   54:	d9 f7       	brne	.-10     	; 0x4c <__do_copy_data+0xc>
 
 00000056 <__do_clear_bss>:
   56:	2f e3       	ldi	r18, 0x3F	; 63
-  58:	a6 e0       	ldi	r26, 0x06	; 6
+  58:	a4 e0       	ldi	r26, 0x04	; 4
   5a:	bf e3       	ldi	r27, 0x3F	; 63
   5c:	01 c0       	rjmp	.+2      	; 0x60 <.do_clear_bss_start>
 
@@ -93,303 +93,241 @@ Disassembly of section .text:
   5e:	1d 92       	st	X+, r1
 
 00000060 <.do_clear_bss_start>:
-  60:	ac 31       	cpi	r26, 0x1C	; 28
+  60:	a3 31       	cpi	r26, 0x13	; 19
   62:	b2 07       	cpc	r27, r18
   64:	e1 f7       	brne	.-8      	; 0x5e <.do_clear_bss_loop>
-  66:	92 d0       	rcall	.+292    	; 0x18c <main>
+  66:	8e d0       	rcall	.+284    	; 0x184 <main>
   68:	af c0       	rjmp	.+350    	; 0x1c8 <_exit>
 
 0000006a <__bad_interrupt>:
   6a:	ca cf       	rjmp	.-108    	; 0x0 <__vectors>
 
 0000006c <ADC0_read_sample>:
-
-#define v_measure_pin (2)
-
-uint16_t ADC0_read_sample(void)
-{
-	PORTA_OUT |= (1<<v_measure_pin);
+	for(size_t i = 0;i <strlen(str); i++)
+	{
+		USART0_sendChar(str[i]);
+	}
+	
+}
   6c:	e4 e0       	ldi	r30, 0x04	; 4
   6e:	f4 e0       	ldi	r31, 0x04	; 4
   70:	80 81       	ld	r24, Z
   72:	84 60       	ori	r24, 0x04	; 4
   74:	80 83       	st	Z, r24
-	
-	ADC0.COMMAND = ADC_STCONV_bm;
   76:	81 e0       	ldi	r24, 0x01	; 1
   78:	80 93 08 06 	sts	0x0608, r24	; 0x800608 <__RODATA_PM_OFFSET__+0x7f8608>
-	
-	while(!(ADC0.INTFLAGS & ADC_RESRDY_bm))
   7c:	80 91 0b 06 	lds	r24, 0x060B	; 0x80060b <__RODATA_PM_OFFSET__+0x7f860b>
   80:	80 ff       	sbrs	r24, 0
   82:	fc cf       	rjmp	.-8      	; 0x7c <ADC0_read_sample+0x10>
-	{
-		;
-	}
-	
-	ADC0.INTFLAGS = ADC_RESRDY_bm;
   84:	e0 e0       	ldi	r30, 0x00	; 0
   86:	f6 e0       	ldi	r31, 0x06	; 6
   88:	81 e0       	ldi	r24, 0x01	; 1
   8a:	83 87       	std	Z+11, r24	; 0x0b
-	
-	PORTA_OUT &= ~(1<<v_measure_pin);
   8c:	a4 e0       	ldi	r26, 0x04	; 4
   8e:	b4 e0       	ldi	r27, 0x04	; 4
   90:	8c 91       	ld	r24, X
   92:	8b 7f       	andi	r24, 0xFB	; 251
   94:	8c 93       	st	X, r24
-	
-	return ADC0.RES;
   96:	80 89       	ldd	r24, Z+16	; 0x10
   98:	91 89       	ldd	r25, Z+17	; 0x11
-	
-}
   9a:	08 95       	ret
 
 0000009c <ADC0_init_sample>:
-
-void ADC0_init_sample(void)
-{
-	PORTA_DIR = (1<<v_measure_pin);	
   9c:	e0 e0       	ldi	r30, 0x00	; 0
   9e:	f4 e0       	ldi	r31, 0x04	; 4
   a0:	84 e0       	ldi	r24, 0x04	; 4
   a2:	80 83       	st	Z, r24
-	
-	PORTA.PIN1CTRL = PORT_ISC_INPUT_DISABLE_gc;  //disable input buffer
   a4:	81 8b       	std	Z+17, r24	; 0x11
-	PORTA.PIN1CTRL &= ~PORT_PULLUPEN_bm;   // re-disable pull up
   a6:	91 89       	ldd	r25, Z+17	; 0x11
   a8:	97 7f       	andi	r25, 0xF7	; 247
   aa:	91 8b       	std	Z+17, r25	; 0x11
-	
-	VREF.CTRLA = VREF_ADC0REFSEL_2V5_gc;   // internal reference to 2.50v
   ac:	90 e2       	ldi	r25, 0x20	; 32
   ae:	90 93 a0 00 	sts	0x00A0, r25	; 0x8000a0 <__RODATA_PM_OFFSET__+0x7f80a0>
-	
-	ADC0.CTRLA = ADC_ENABLE_bm | ADC_RESSEL_10BIT_gc; /* ADC Enable: enabled */
   b2:	e0 e0       	ldi	r30, 0x00	; 0
   b4:	f6 e0       	ldi	r31, 0x06	; 6
   b6:	91 e0       	ldi	r25, 0x01	; 1
   b8:	90 83       	st	Z, r25
-	
-	ADC0.CTRLC = ADC_REFSEL_INTREF_gc | ADC_PRESC_DIV4_gc ;    // internal reference and clock divided by 5
   ba:	92 83       	std	Z+2, r25	; 0x02
-	
-	ADC0.MUXPOS = ADC_MUXPOS_AIN1_gc; // on pin pa1
   bc:	96 83       	std	Z+6, r25	; 0x06
-	
-	ADC0.CTRLB = ADC_SAMPNUM_ACC16_gc; // 16 samples
   be:	81 83       	std	Z+1, r24	; 0x01
   c0:	08 95       	ret
 
 000000c2 <USART0_init>:
-
-
-
-void USART0_init(void)
-{
-	PORTB_DIR |= PIN2_bm;       // Tx - Output(1)
   c2:	e0 e2       	ldi	r30, 0x20	; 32
   c4:	f4 e0       	ldi	r31, 0x04	; 4
   c6:	80 81       	ld	r24, Z
   c8:	84 60       	ori	r24, 0x04	; 4
   ca:	80 83       	st	Z, r24
-	//PORTB_DIR &= ~PIN3_bm;	// Rx - Input(0)
-	
-	USART0.BAUD =(uint16_t)USART0_BAUD_RATE(9600);
-  cc:	e0 e0       	ldi	r30, 0x00	; 0
-  ce:	f8 e0       	ldi	r31, 0x08	; 8
-  d0:	87 e5       	ldi	r24, 0x57	; 87
-  d2:	94 e0       	ldi	r25, 0x04	; 4
-  d4:	80 87       	std	Z+8, r24	; 0x08
-  d6:	91 87       	std	Z+9, r25	; 0x09
-	
-	USART0.CTRLB |= USART_TXEN_bm; //enabling the transmit line
-  d8:	86 81       	ldd	r24, Z+6	; 0x06
-  da:	80 64       	ori	r24, 0x40	; 64
-  dc:	86 83       	std	Z+6, r24	; 0x06
-  de:	08 95       	ret
+  cc:	80 81       	ld	r24, Z
+  ce:	87 7f       	andi	r24, 0xF7	; 247
+  d0:	80 83       	st	Z, r24
+  d2:	e0 e0       	ldi	r30, 0x00	; 0
+  d4:	f8 e0       	ldi	r31, 0x08	; 8
+  d6:	87 e5       	ldi	r24, 0x57	; 87
+  d8:	94 e0       	ldi	r25, 0x04	; 4
+  da:	80 87       	std	Z+8, r24	; 0x08
+  dc:	91 87       	std	Z+9, r25	; 0x09
+  de:	86 81       	ldd	r24, Z+6	; 0x06
+  e0:	80 64       	ori	r24, 0x40	; 64
+  e2:	86 83       	std	Z+6, r24	; 0x06
+  e4:	08 95       	ret
 
-000000e0 <USART0_sendChar>:
-	
-}
+000000e6 <USART0_sendChar>:
+  e6:	90 91 04 08 	lds	r25, 0x0804	; 0x800804 <__RODATA_PM_OFFSET__+0x7f8804>
+  ea:	95 ff       	sbrs	r25, 5
+  ec:	fc cf       	rjmp	.-8      	; 0xe6 <USART0_sendChar>
+  ee:	80 93 02 08 	sts	0x0802, r24	; 0x800802 <__RODATA_PM_OFFSET__+0x7f8802>
+  f2:	08 95       	ret
 
-void USART0_sendChar(uint16_t c)
-{
-	while(!(USART0.STATUS & USART_DREIE_bm))
-  e0:	90 91 04 08 	lds	r25, 0x0804	; 0x800804 <__RODATA_PM_OFFSET__+0x7f8804>
-  e4:	95 ff       	sbrs	r25, 5
-  e6:	fc cf       	rjmp	.-8      	; 0xe0 <USART0_sendChar>
-	{
-		;
-	}
-	USART0.TXDATAL = c;
-  e8:	80 93 02 08 	sts	0x0802, r24	; 0x800802 <__RODATA_PM_OFFSET__+0x7f8802>
-  ec:	08 95       	ret
-
-000000ee <USART0_sendString>:
-}
-
-void USART0_sendString(uint8_t *str)
-{
-  ee:	0f 93       	push	r16
-  f0:	1f 93       	push	r17
-  f2:	cf 93       	push	r28
-  f4:	df 93       	push	r29
-  f6:	8c 01       	movw	r16, r24
-	/*for(size_t i = 0;i <strlen(str); i++)
-	{
-		USART0_sendChar(str[i]);
-	}
-	*/
-	USART0_sendChar(frameStart);
-  f8:	80 91 05 3f 	lds	r24, 0x3F05	; 0x803f05 <frameStart>
-  fc:	90 e0       	ldi	r25, 0x00	; 0
-  fe:	f0 df       	rcall	.-32     	; 0xe0 <USART0_sendChar>
-	
-	for(size_t i = 0;i < 6; i++)
- 100:	c0 e0       	ldi	r28, 0x00	; 0
- 102:	d0 e0       	ldi	r29, 0x00	; 0
- 104:	07 c0       	rjmp	.+14     	; 0x114 <__DATA_REGION_LENGTH__+0x14>
-	{
-		USART0_sendChar(str[i]);
- 106:	f8 01       	movw	r30, r16
- 108:	ec 0f       	add	r30, r28
- 10a:	fd 1f       	adc	r31, r29
- 10c:	80 81       	ld	r24, Z
- 10e:	90 e0       	ldi	r25, 0x00	; 0
- 110:	e7 df       	rcall	.-50     	; 0xe0 <USART0_sendChar>
-		USART0_sendChar(str[i]);
-	}
-	*/
-	USART0_sendChar(frameStart);
-	
-	for(size_t i = 0;i < 6; i++)
- 112:	21 96       	adiw	r28, 0x01	; 1
- 114:	c6 30       	cpi	r28, 0x06	; 6
- 116:	d1 05       	cpc	r29, r1
- 118:	b0 f3       	brcs	.-20     	; 0x106 <__DATA_REGION_LENGTH__+0x6>
-	{
-		USART0_sendChar(str[i]);
-	}
-	
-	USART0_sendChar(frameStop);
- 11a:	80 91 04 3f 	lds	r24, 0x3F04	; 0x803f04 <frameStop>
- 11e:	90 e0       	ldi	r25, 0x00	; 0
- 120:	df df       	rcall	.-66     	; 0xe0 <USART0_sendChar>
-}
- 122:	df 91       	pop	r29
- 124:	cf 91       	pop	r28
- 126:	1f 91       	pop	r17
- 128:	0f 91       	pop	r16
- 12a:	08 95       	ret
-
-0000012c <low_power_init>:
+000000f4 <low_power_init>:
 {
 	//PORTA_DIR = 0xff; // all pins as output to save power
 	
 	//PORTA.PIN0CTRL = PORT_ISC_INPUT_DISABLE_gc; //UPDI
 	//PORTA.PIN1CTRL = PORT_ISC_INPUT_DISABLE_gc; //Analog in
 	PORTA.PIN2CTRL = PORT_ISC_INPUT_DISABLE_gc;   // digital out to adc
- 12c:	e0 e0       	ldi	r30, 0x00	; 0
- 12e:	f4 e0       	ldi	r31, 0x04	; 4
- 130:	84 e0       	ldi	r24, 0x04	; 4
- 132:	82 8b       	std	Z+18, r24	; 0x12
+  f4:	e0 e0       	ldi	r30, 0x00	; 0
+  f6:	f4 e0       	ldi	r31, 0x04	; 4
+  f8:	84 e0       	ldi	r24, 0x04	; 4
+  fa:	82 8b       	std	Z+18, r24	; 0x12
 	PORTA.PIN3CTRL = PORT_ISC_INPUT_DISABLE_gc;
- 134:	83 8b       	std	Z+19, r24	; 0x13
+  fc:	83 8b       	std	Z+19, r24	; 0x13
 	PORTA.PIN4CTRL = PORT_ISC_INPUT_DISABLE_gc;	
- 136:	84 8b       	std	Z+20, r24	; 0x14
+  fe:	84 8b       	std	Z+20, r24	; 0x14
 	PORTA.PIN5CTRL = PORT_ISC_INPUT_DISABLE_gc;
- 138:	85 8b       	std	Z+21, r24	; 0x15
+ 100:	85 8b       	std	Z+21, r24	; 0x15
 	PORTA.PIN6CTRL = PORT_ISC_INPUT_DISABLE_gc;	
- 13a:	86 8b       	std	Z+22, r24	; 0x16
+ 102:	86 8b       	std	Z+22, r24	; 0x16
 	PORTA.PIN7CTRL = PORT_ISC_INPUT_DISABLE_gc;	
- 13c:	87 8b       	std	Z+23, r24	; 0x17
+ 104:	87 8b       	std	Z+23, r24	; 0x17
 	
 	PORTB.PIN0CTRL = PORT_ISC_INPUT_DISABLE_gc;
- 13e:	e0 e2       	ldi	r30, 0x20	; 32
- 140:	f4 e0       	ldi	r31, 0x04	; 4
- 142:	80 8b       	std	Z+16, r24	; 0x10
+ 106:	e0 e2       	ldi	r30, 0x20	; 32
+ 108:	f4 e0       	ldi	r31, 0x04	; 4
+ 10a:	80 8b       	std	Z+16, r24	; 0x10
 	PORTB.PIN1CTRL = PORT_ISC_INPUT_DISABLE_gc;
- 144:	81 8b       	std	Z+17, r24	; 0x11
- 146:	08 95       	ret
+ 10c:	81 8b       	std	Z+17, r24	; 0x11
+ 10e:	08 95       	ret
 
-00000148 <makeStruct>:
+00000110 <begin>:
+uint8_t packetSize = 0;
+uint8_t *receiveBufferPtr = NULL;
 
-uint8_t SerialBuffer[8+ sizeof(dataBuffer)];
-
-void makeStruct(dataBuffer *receivebuffer)
+void begin(uint8_t _packetSize, uint8_t *_receiveBufferPtr)
 {
-	receivebuffer->address =moduleNum;
- 148:	20 91 00 3f 	lds	r18, 0x3F00	; 0x803f00 <__DATA_REGION_ORIGIN__>
- 14c:	fc 01       	movw	r30, r24
- 14e:	20 83       	st	Z, r18
-	receivebuffer->operation =0;
- 150:	11 82       	std	Z+1, r1	; 0x01
-	
-	for (int i = 1; i<=maxModules ; i++)
- 152:	21 e0       	ldi	r18, 0x01	; 1
- 154:	30 e0       	ldi	r19, 0x00	; 0
- 156:	12 c0       	rjmp	.+36     	; 0x17c <makeStruct+0x34>
-	{
-		if(i==moduleNum)
- 158:	40 91 00 3f 	lds	r20, 0x3F00	; 0x803f00 <__DATA_REGION_ORIGIN__>
- 15c:	50 91 01 3f 	lds	r21, 0x3F01	; 0x803f01 <__DATA_REGION_ORIGIN__+0x1>
- 160:	24 17       	cp	r18, r20
- 162:	35 07       	cpc	r19, r21
- 164:	49 f4       	brne	.+18     	; 0x178 <makeStruct+0x30>
-			receivebuffer->value[i-1] = 696;
- 166:	f9 01       	movw	r30, r18
- 168:	ee 0f       	add	r30, r30
- 16a:	ff 1f       	adc	r31, r31
- 16c:	e8 0f       	add	r30, r24
- 16e:	f9 1f       	adc	r31, r25
- 170:	48 eb       	ldi	r20, 0xB8	; 184
- 172:	52 e0       	ldi	r21, 0x02	; 2
- 174:	40 83       	st	Z, r20
- 176:	51 83       	std	Z+1, r21	; 0x01
-void makeStruct(dataBuffer *receivebuffer)
+	packetSize =_packetSize;
+ 110:	80 93 06 3f 	sts	0x3F06, r24	; 0x803f06 <packetSize>
+	receiveBufferPtr =_receiveBufferPtr;
+ 114:	60 93 04 3f 	sts	0x3F04, r22	; 0x803f04 <__data_end>
+ 118:	70 93 05 3f 	sts	0x3F05, r23	; 0x803f05 <__data_end+0x1>
+ 11c:	08 95       	ret
+
+0000011e <sendBuffer>:
+}
+
+void sendBuffer(uint8_t *str)
 {
-	receivebuffer->address =moduleNum;
-	receivebuffer->operation =0;
+ 11e:	0f 93       	push	r16
+ 120:	1f 93       	push	r17
+ 122:	cf 93       	push	r28
+ 124:	df 93       	push	r29
+ 126:	8c 01       	movw	r16, r24
+
+	USART0_sendChar(frameStart);
+ 128:	80 91 01 3f 	lds	r24, 0x3F01	; 0x803f01 <frameStart>
+ 12c:	dc df       	rcall	.-72     	; 0xe6 <USART0_sendChar>
 	
-	for (int i = 1; i<=maxModules ; i++)
- 178:	2f 5f       	subi	r18, 0xFF	; 255
- 17a:	3f 4f       	sbci	r19, 0xFF	; 255
- 17c:	40 91 02 3f 	lds	r20, 0x3F02	; 0x803f02 <maxModules>
- 180:	50 91 03 3f 	lds	r21, 0x3F03	; 0x803f03 <maxModules+0x1>
- 184:	42 17       	cp	r20, r18
- 186:	53 07       	cpc	r21, r19
- 188:	3c f7       	brge	.-50     	; 0x158 <makeStruct+0x10>
+	for(size_t i = 0;i < packetSize; i++)
+ 12e:	c0 e0       	ldi	r28, 0x00	; 0
+ 130:	d0 e0       	ldi	r29, 0x00	; 0
+ 132:	06 c0       	rjmp	.+12     	; 0x140 <sendBuffer+0x22>
 	{
-		if(i==moduleNum)
-			receivebuffer->value[i-1] = 696;
+		USART0_sendChar(str[i]);
+ 134:	f8 01       	movw	r30, r16
+ 136:	ec 0f       	add	r30, r28
+ 138:	fd 1f       	adc	r31, r29
+ 13a:	80 81       	ld	r24, Z
+ 13c:	d4 df       	rcall	.-88     	; 0xe6 <USART0_sendChar>
+void sendBuffer(uint8_t *str)
+{
+
+	USART0_sendChar(frameStart);
+	
+	for(size_t i = 0;i < packetSize; i++)
+ 13e:	21 96       	adiw	r28, 0x01	; 1
+ 140:	80 91 06 3f 	lds	r24, 0x3F06	; 0x803f06 <packetSize>
+ 144:	90 e0       	ldi	r25, 0x00	; 0
+ 146:	c8 17       	cp	r28, r24
+ 148:	d9 07       	cpc	r29, r25
+ 14a:	a0 f3       	brcs	.-24     	; 0x134 <sendBuffer+0x16>
+	{
+		USART0_sendChar(str[i]);
 	}
 	
+	USART0_sendChar(frameStop);
+ 14c:	80 91 00 3f 	lds	r24, 0x3F00	; 0x803f00 <__DATA_REGION_ORIGIN__>
+ 150:	ca df       	rcall	.-108    	; 0xe6 <USART0_sendChar>
 }
- 18a:	08 95       	ret
+ 152:	df 91       	pop	r29
+ 154:	cf 91       	pop	r28
+ 156:	1f 91       	pop	r17
+ 158:	0f 91       	pop	r16
+ 15a:	08 95       	ret
 
-0000018c <main>:
+0000015c <makeStruct>:
 
+
+
+
+void makeStruct(dataBuffer *receivebuffer)
+{
+ 15c:	dc 01       	movw	r26, r24
+	uint8_t moduleIndex = moduleNum-1;
+ 15e:	80 91 02 3f 	lds	r24, 0x3F02	; 0x803f02 <moduleNum>
+ 162:	9f ef       	ldi	r25, 0xFF	; 255
+ 164:	98 0f       	add	r25, r24
+	receivebuffer->address =moduleNum;
+ 166:	8c 93       	st	X, r24
+	
+	receivebuffer->value[moduleIndex] = adcVal;
+ 168:	e9 2f       	mov	r30, r25
+ 16a:	f0 e0       	ldi	r31, 0x00	; 0
+ 16c:	31 96       	adiw	r30, 0x01	; 1
+ 16e:	ee 0f       	add	r30, r30
+ 170:	ff 1f       	adc	r31, r31
+ 172:	ea 0f       	add	r30, r26
+ 174:	fb 1f       	adc	r31, r27
+ 176:	80 91 07 3f 	lds	r24, 0x3F07	; 0x803f07 <adcVal>
+ 17a:	90 91 08 3f 	lds	r25, 0x3F08	; 0x803f08 <adcVal+0x1>
+ 17e:	80 83       	st	Z, r24
+ 180:	91 83       	std	Z+1, r25	; 0x01
+ 182:	08 95       	ret
+
+00000184 <main>:
+	
+}
 
 int main(void)
 {
-	
 	low_power_init();
- 18c:	cf df       	rcall	.-98     	; 0x12c <low_power_init>
+ 184:	b7 df       	rcall	.-146    	; 0xf4 <low_power_init>
   	USART0_init();
- 18e:	99 df       	rcall	.-206    	; 0xc2 <USART0_init>
+ 186:	9d df       	rcall	.-198    	; 0xc2 <USART0_init>
   	ADC0_init_sample();
- 190:	85 df       	rcall	.-246    	; 0x9c <ADC0_init_sample>
+ 188:	89 df       	rcall	.-238    	; 0x9c <ADC0_init_sample>
+	
+	begin(sizeof(dataBuffer),SerialBuffer);
+ 18a:	69 e0       	ldi	r22, 0x09	; 9
+ 18c:	7f e3       	ldi	r23, 0x3F	; 63
+ 18e:	86 e0       	ldi	r24, 0x06	; 6
+ 190:	bf df       	rcall	.-130    	; 0x110 <begin>
+	
 	
 	while (1)
   	{
 		
 	  	adcVal = ADC0_read_sample();
  192:	6c df       	rcall	.-296    	; 0x6c <ADC0_read_sample>
-	  	
 	  	adcVal = adcVal >> 4;
  194:	92 95       	swap	r25
  196:	82 95       	swap	r24
@@ -397,20 +335,18 @@ int main(void)
  19a:	89 27       	eor	r24, r25
  19c:	9f 70       	andi	r25, 0x0F	; 15
  19e:	89 27       	eor	r24, r25
- 1a0:	80 93 0c 3f 	sts	0x3F0C, r24	; 0x803f0c <adcVal>
- 1a4:	90 93 0d 3f 	sts	0x3F0D, r25	; 0x803f0d <adcVal+0x1>
+ 1a0:	80 93 07 3f 	sts	0x3F07, r24	; 0x803f07 <adcVal>
+ 1a4:	90 93 08 3f 	sts	0x3F08, r25	; 0x803f08 <adcVal+0x1>
 		  
-
-		//sprintf("%i\r\n" , adcVal);  //takes up huge chunk of code space.
 		makeStruct((dataBuffer*)SerialBuffer);
- 1a8:	8e e0       	ldi	r24, 0x0E	; 14
+ 1a8:	89 e0       	ldi	r24, 0x09	; 9
  1aa:	9f e3       	ldi	r25, 0x3F	; 63
- 1ac:	cd df       	rcall	.-102    	; 0x148 <makeStruct>
+ 1ac:	d7 df       	rcall	.-82     	; 0x15c <makeStruct>
 		
-	  	USART0_sendString(SerialBuffer);
- 1ae:	8e e0       	ldi	r24, 0x0E	; 14
+	  	sendBuffer(SerialBuffer);
+ 1ae:	89 e0       	ldi	r24, 0x09	; 9
  1b0:	9f e3       	ldi	r25, 0x3F	; 63
- 1b2:	9d df       	rcall	.-198    	; 0xee <USART0_sendString>
+ 1b2:	b5 df       	rcall	.-150    	; 0x11e <sendBuffer>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
@@ -423,10 +359,10 @@ int main(void)
  1ba:	21 50       	subi	r18, 0x01	; 1
  1bc:	80 40       	sbci	r24, 0x00	; 0
  1be:	90 40       	sbci	r25, 0x00	; 0
- 1c0:	e1 f7       	brne	.-8      	; 0x1ba <main+0x2e>
- 1c2:	00 c0       	rjmp	.+0      	; 0x1c4 <main+0x38>
- 1c4:	00 c0       	rjmp	.+0      	; 0x1c6 <main+0x3a>
- 1c6:	e5 cf       	rjmp	.-54     	; 0x192 <main+0x6>
+ 1c0:	e1 f7       	brne	.-8      	; 0x1ba <main+0x36>
+ 1c2:	00 c0       	rjmp	.+0      	; 0x1c4 <main+0x40>
+ 1c4:	00 c0       	rjmp	.+0      	; 0x1c6 <main+0x42>
+ 1c6:	e5 cf       	rjmp	.-54     	; 0x192 <main+0xe>
 
 000001c8 <_exit>:
  1c8:	f8 94       	cli

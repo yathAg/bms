@@ -9,6 +9,19 @@
 #ifndef SYSTEM_H_
 #define SYSTEM_H_
 
+//--Configuration
+#define  maxModules  2
+
+uint8_t moduleNum = 1; // indexed at 1
+
+typedef struct dataBuffer
+{
+	uint8_t address;
+	uint8_t operation;
+	uint16_t value[maxModules];
+} dataBuffer;// __attribute__((packed));
+
+
 void low_power_init(void)
 {
 	//PORTA_DIR = 0xff; // all pins as output to save power
