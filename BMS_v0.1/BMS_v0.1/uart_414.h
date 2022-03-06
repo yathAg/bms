@@ -11,6 +11,13 @@
 
 #define USART0_BAUD_RATE(BAUD_RATE) (   (float)(F_CPU * 64)/ (16 * (float)BAUD_RATE)      )
 
+
+
+
+
+
+
+
 void USART0_init(void)
 {
 	PORTB_DIR |= PIN2_bm;       // Tx - Output(1)
@@ -22,7 +29,7 @@ void USART0_init(void)
 	
 }
 
-void USART0_sendChar(char c)
+void USART0_sendChar(uint16_t c)
 {
 	while(!(USART0.STATUS & USART_DREIE_bm))
 	{
@@ -31,9 +38,14 @@ void USART0_sendChar(char c)
 	USART0.TXDATAL = c;
 }
 
-void USART0_sendString(char *str)
+void USART0_sendString(uint8_t *str)
 {
-	for(size_t i = 0;i <strlen(str); i++)
+	/*for(size_t i = 0;i <strlen(str); i++)
+	{
+		USART0_sendChar(str[i]);
+	}
+	*/
+	for(size_t i = 0;i < 6; i++)
 	{
 		USART0_sendChar(str[i]);
 	}
