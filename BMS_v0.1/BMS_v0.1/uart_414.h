@@ -13,7 +13,8 @@
 
 
 
-
+uint8_t frameStart = 0b00001111;
+uint8_t frameStop = 0b11110000;
 
 
 
@@ -45,10 +46,14 @@ void USART0_sendString(uint8_t *str)
 		USART0_sendChar(str[i]);
 	}
 	*/
+	USART0_sendChar(frameStart);
+	
 	for(size_t i = 0;i < 6; i++)
 	{
 		USART0_sendChar(str[i]);
 	}
+	
+	USART0_sendChar(frameStop);
 }
 
 

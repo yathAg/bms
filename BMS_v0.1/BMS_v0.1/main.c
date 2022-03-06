@@ -29,28 +29,43 @@ FUSES = {
 	.BOOTEND    = FUSE_BOOTEND_DEFAULT,
 };
 
+
+
+
+
 uint16_t adcVal;
 char adcStr[6] ;
+int maxModules = 2;
+int moduleNum = 1; // indexed at 1
+
+
+
+
+
+
 
 typedef struct dataBuffer 
 {
 	uint8_t address;
-	uint8_t test;
+	uint8_t operation;
 	uint16_t value[2];
 } dataBuffer;// __attribute__((packed));
 
-//struct dataBuffer data;
+uint8_t SerialBuffer[8+ sizeof(dataBuffer)];
 
-//uint8_t test = sizeof(data);
-
-uint8_t SerialPacketReceiveBuffer[8+ sizeof(dataBuffer)];
-
-void onPacketReceived(dataBuffer *receivebuffer)
+void makeStruct(dataBuffer *receivebuffer)
 {
-	receivebuffer->address =2;
-	//receivebuffer->test =2;
-	receivebuffer->value[1] = 900;
+	receivebuffer->address =moduleNum;
+	receivebuffer->operation =0;
+	
+	for (int i = 1; i<=maxModules ; i++)
+	{
+		if(i==moduleNum)
+			receivebuffer->value[i-1] = 696;
+	}
+	
 }
+
 
 int main(void)
 {
@@ -66,20 +81,11 @@ int main(void)
 	  	
 	  	adcVal = adcVal >> 4;
 		  
-		  //data.address = 1;
-		  //data.value = adcVal;
-	  	
-		  //temp = adcdata;
-		  
-		  //*adcdata = adcVal;
-		  
-		 // adcdata +=1;
-		  
-		 // *adcdata = 5;
+
 		//sprintf("%i\r\n" , adcVal);  //takes up huge chunk of code space.
-		onPacketReceived((dataBuffer*)SerialPacketReceiveBuffer);
+		makeStruct((dataBuffer*)SerialBuffer);
 		
-	  	USART0_sendString(SerialPacketReceiveBuffer);
+	  	USART0_sendString(SerialBuffer);
 	  	
 		_delay_ms(1000);
 		
